@@ -57,6 +57,8 @@ import org.eclipse.lsp4j.HoverParams;
 import org.eclipse.lsp4j.ImplementationParams;
 import org.eclipse.lsp4j.Location;
 import org.eclipse.lsp4j.LocationLink;
+import org.eclipse.lsp4j.Moniker;
+import org.eclipse.lsp4j.MonikerParams;
 import org.eclipse.lsp4j.PrepareRenameParams;
 import org.eclipse.lsp4j.PrepareRenameResult;
 import org.eclipse.lsp4j.Range;
@@ -559,6 +561,17 @@ public interface TextDocumentService {
 	 */
 	@JsonRequest(value="textDocument/semanticTokens/range", useSegment = false)
 	default CompletableFuture<SemanticTokens> semanticTokensRange(SemanticTokensRangeParams params) {
+		throw new UnsupportedOperationException();
+	}
+	
+	
+	/**
+	 * The {@code textDocument/moniker} request is sent from the client to get the symbol monikers for a given 
+	 * text document position. An array of Moniker types is returned as response to indicate possible monikers 
+	 * at the given location. If no monikers can be calculated, an empty array or null should be returned.
+	 */
+	@JsonRequest(value="textDocument/moniker", useSegment = false)
+	default CompletableFuture<List<Moniker>> moniker(MonikerParams params) {
 		throw new UnsupportedOperationException();
 	}
 }

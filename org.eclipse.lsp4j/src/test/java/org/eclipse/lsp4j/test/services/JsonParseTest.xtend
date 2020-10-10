@@ -103,6 +103,9 @@ import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.*
+import org.eclipse.lsp4j.Moniker
+import org.eclipse.lsp4j.UniquenessLevel
+import org.eclipse.lsp4j.MonikerKind
 
 class JsonParseTest {
 	
@@ -1588,6 +1591,51 @@ class JsonParseTest {
 					message = "message"
 				]
 			]
+		])
+	}
+
+	@Test
+	def void testMonikerResponse() {
+		jsonHandler.methodProvider = [ id |
+			switch id {
+				case '12': MessageMethods.DOC_MONIKER
+			}
+		]
+		'''
+			{
+				"jsonrpc": "2.0",
+				"id": "12",
+				"result": [
+					{
+						"scheme": "scheme",
+						"identifier": "identifier",
+						"unique": "scheme",
+						"kind": "import"
+					},
+					{
+						"scheme": "scheme",
+						"identifier": "identifier",
+						"unique": "group",
+						"kind": "local"
+					}
+				]
+			}
+		'''.assertParse(new ResponseMessage => [
+			jsonrpc = "2.0"
+			id = "12"
+			result = newArrayList(new Moniker => [
+					scheme = "scheme"
+					identifier = "identifier"
+					unique = UniquenessLevel.scheme
+					kind = MonikerKind.importKind
+				],
+				new Moniker => [
+					scheme = "scheme"
+					identifier = "identifier"
+					unique = UniquenessLevel.group
+					kind = MonikerKind.localKind
+				]
+			)
 		])
 	}
 }
